@@ -1,0 +1,8 @@
+# Rust / Cargo build artifacts
+/target
+
+# Generated test images
+*.png
+
+# Local task tracker — intentionally not tracked in version control
+TODO.md
