@@ -1,15 +1,15 @@
 pub struct Gf256 {
-    log: [u8; 256],
-    exp: [u8; 256],
+    log_table: [u8; 256],
+    exp_table: [u8; 256],
 }
 
 impl Gf256 {
     pub fn new() -> Self {
         let (log, exp) = Self::build_tables();
-        Self { log, exp }
+        Self { log_table: log, exp_table: exp }
     }
 
-    pub fn add(&self, a: u8, b: u8) -> u8 {
+    pub fn add(a: u8, b: u8) -> u8 {
         a ^ b
     }
 
@@ -17,7 +17,7 @@ impl Gf256 {
         if a == 0 || b == 0 {
             return 0;
         }
-        self.exp[((self.log[a as usize] as u16 + self.log[b as usize] as u16) % 255) as usize]
+        self.exp_table[((self.log_table[a as usize] as u16 + self.log_table[b as usize] as u16) % 255) as usize]
     }
 
     pub fn div(&self, a: u8, b: u8) -> u8 {
@@ -27,7 +27,11 @@ impl Gf256 {
         if a == 0 {
             return 0;
         }
-        self.exp[((self.log[a as usize] as u16 + 255 - self.log[b as usize] as u16) % 255) as usize]
+        self.exp_table[((self.log_table[a as usize] as u16 + 255 - self.log_table[b as usize] as u16) % 255) as usize]
+    }
+
+    pub fn pow(&self, x: usize) -> u8 {
+        self.exp_table[x % 255]
     }
 
     fn build_tables() -> ([u8; 256], [u8; 256]) {
@@ -58,11 +62,10 @@ mod tests {
 
     #[test]
     fn test_add() {
-        let gf = Gf256::new();
-        assert_eq!(gf.add(0b0, 0b1), 0b1);
-        assert_eq!(gf.add(0b1, 0b1), 0b0);
-        assert_eq!(gf.add(0b1010, 0b0101), 0b1111);
-        assert_eq!(gf.add(0b01010111, 0b10000011), 0b11010100);
+        assert_eq!(Gf256::add(0b0, 0b1), 0b1);
+        assert_eq!(Gf256::add(0b1, 0b1), 0b0);
+        assert_eq!(Gf256::add(0b1010, 0b0101), 0b1111);
+        assert_eq!(Gf256::add(0b01010111, 0b10000011), 0b11010100);
     }
 
     #[test]
