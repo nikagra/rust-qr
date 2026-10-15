@@ -4,5 +4,5 @@
 # Generated test images
 *.png
 
-# Local task tracker — intentionally not tracked in version control
-TODO.md
+# Claude Code: share .claude/ (commands, settings, CLAUDE.md), keep per-machine settings local
+.claude/settings.local.json
