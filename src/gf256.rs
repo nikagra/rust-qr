@@ -6,7 +6,10 @@ pub struct Gf256 {
 impl Gf256 {
     pub fn new() -> Self {
         let (log, exp) = Self::build_tables();
-        Self { log_table: log, exp_table: exp }
+        Self {
+            log_table: log,
+            exp_table: exp,
+        }
     }
 
     pub fn add(a: u8, b: u8) -> u8 {
@@ -17,7 +20,8 @@ impl Gf256 {
         if a == 0 || b == 0 {
             return 0;
         }
-        self.exp_table[((self.log_table[a as usize] as u16 + self.log_table[b as usize] as u16) % 255) as usize]
+        self.exp_table[((self.log_table[a as usize] as u16 + self.log_table[b as usize] as u16)
+            % 255) as usize]
     }
 
     pub fn div(&self, a: u8, b: u8) -> u8 {
@@ -27,7 +31,9 @@ impl Gf256 {
         if a == 0 {
             return 0;
         }
-        self.exp_table[((self.log_table[a as usize] as u16 + 255 - self.log_table[b as usize] as u16) % 255) as usize]
+        self.exp_table[((self.log_table[a as usize] as u16 + 255
+            - self.log_table[b as usize] as u16)
+            % 255) as usize]
     }
 
     pub fn pow(&self, x: usize) -> u8 {
